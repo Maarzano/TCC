@@ -1,9 +1,11 @@
 import styled from "styled-components";
 import Modal from "..";
 import { useEffect, useMemo } from "react";
+import { useCart } from "../../../Context/Cart";
 
 const ConfirmActionModal = ({ isOpen, onClose, type = 'save', onConfirm, data }) => {
-  const { title, confirmColor, confirmLabel, p } = useMemo(() => {
+  const {cartItems, removeItemFromCart } = useCart();
+  const { title, confirmColor, confirmLabel, p, onClickDelete } = useMemo(() => {
     switch (type) {
       case "save":
         return {
@@ -19,11 +21,15 @@ const ConfirmActionModal = ({ isOpen, onClose, type = 'save', onConfirm, data })
           p: "editar"
         };
       case "delete":
+        const onClickDelete = (obj) => {
+          removeItemFromCart(obj.itemId);
+        }
         return {
           title: "Tem certeza que deseja excluir?",
           confirmColor: "#b31414",
           confirmLabel: "Excluir",
-          p: "excluir"
+          p: "excluir",
+          onClickDelete
         };
       case "cancel":
         return {
@@ -59,7 +65,7 @@ const ConfirmActionModal = ({ isOpen, onClose, type = 'save', onConfirm, data })
         <p>{data != null && `realmente deseja ${p} ${data.nomeFuncionario}?`} esta ação não poderá ser desfeita.</p>
         <ButtonRow $confirmColor={confirmColor}>
           <button onClick={onClose}>Voltar</button>
-          <button onClick={() => { onConfirm?.(); onClose(); }}>
+          <button onClick={() => { onClickDelete(data); onClose(); }}>
             {confirmLabel}
           </button>
         </ButtonRow>
