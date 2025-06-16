@@ -2,6 +2,8 @@
 import styled from "styled-components";
 import TrashIcon from "../../../Assets/SVGs/Icons/Trash.svg";
 import { useCart } from "../../../Context/Cart";
+import SaveCancelBTN from '../../../Components/Buttons/SaveCancelBTN';
+import BTNExcludeCart from "../BTNExcludeCart";
 
 const CartItemList = ({ searchTerm }) => {
     const { cartItems, removeItemFromCart } = useCart();
@@ -19,9 +21,12 @@ const CartItemList = ({ searchTerm }) => {
                         <Nome>{item.nomeItem}</Nome>
                         <Quantidade>Quantidade: {item.quantity}</Quantidade>
                     </Info>
-                    <DeleteButton onClick={() => removeItemFromCart(item.itemId)}>
-                        <img src={TrashIcon} alt="Excluir" />
-                    </DeleteButton>
+            
+                        <div className="extra-content">
+                            <BTNExcludeCart type="delete" item={item} onClick={() => removeItemFromCart(item.itemId)}>
+                            <img src={TrashIcon} alt="Excluir" />
+                            </BTNExcludeCart>
+                        </div>
                 </Item>
             ))}
         </List>
