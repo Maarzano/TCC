@@ -25,5 +25,7 @@ public record CriarFuncionarioDTO(
     String descricaoFuncionario,
 
     @NotNull(message = "O status ativo deve ser informado")
-    Boolean ativo
+    Boolean ativo,
+
+    String image
 ) { }

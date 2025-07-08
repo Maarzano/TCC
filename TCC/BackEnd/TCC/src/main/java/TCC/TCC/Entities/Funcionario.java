@@ -21,7 +21,9 @@ import lombok.Setter;
 @AllArgsConstructor
 public class Funcionario {
 
-    public Funcionario(String nomeFuncionario, String emailFuncionario, String cpfFuncionario, String celularFuncionario, Date dataNascimentoFuncionario, String descricaoFuncionario, Boolean ativo) {
+    public Funcionario(String nomeFuncionario, String emailFuncionario, String cpfFuncionario,
+                         String celularFuncionario, Date dataNascimentoFuncionario, 
+                         String descricaoFuncionario, Boolean ativo, String image) {
         this.nomeFuncionario = nomeFuncionario;
         this.emailFuncionario = emailFuncionario;
         this.cpfFuncionario = cpfFuncionario;
@@ -29,13 +31,13 @@ public class Funcionario {
         this.dataNascimentoFuncionario = dataNascimentoFuncionario;
         this.descricaoFuncionario = descricaoFuncionario;
         this.ativo = ativo;
+        this.image = image;
     }
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id_funcionario")
     private long funcionarioId;
-
 
     @Column(name = "nome_funcionario", unique = true, nullable = false)
     private String nomeFuncionario;
@@ -57,6 +59,9 @@ public class Funcionario {
 
     @Column(name = "ativo_desativo_funcionario", nullable = false)
     private Boolean ativo = true;
+
+    @Column(name = "image_profile", nullable = true)
+    private String image;
 
 
 }

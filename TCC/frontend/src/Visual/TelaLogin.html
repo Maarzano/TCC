@@ -3,11 +3,10 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <title>Entre no Sistema</title>
     <link rel='stylesheet' href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css'>
-
-
     <link rel="stylesheet" href="assets/CSS/Separations/Login_Cadastro.css">
+
 </head>
 <body>
     <main>
@@ -19,16 +18,17 @@
 
             <div class="login-container">
                 <H1>Login</H1>
-                <form>
+                <form id="login-form">
                     <label for="username">Usuário</label>
-                    <input id="username" type="username" placeholder="E-mail / CPF" name="username">
+                    <input id="username" type="username" placeholder="E-mail / CPF" name="username" required>
                     
                     <label for="password">Senha</label>
-                    <input id="password" type="password" placeholder="Senha">
+                    <input id="password" name="password" type="password" placeholder="Senha" required>
 
-                    <a href="GaleriaItens.html"><button type="button">Entrar</button></a>
+                    <button type="submit">Entrar</button>
                 </form>
-                <a href="TelaCadastro.html"><button type="submit">Cadastrar</button></a>
+                <a href="TelaCadastro.html"><button type="button">Cadastrar</button></a>
+                
 
                 <p><a href="#">Esqueceu a senha?</a></p>
             </div>     

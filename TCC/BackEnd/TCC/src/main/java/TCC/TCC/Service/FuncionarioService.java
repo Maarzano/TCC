@@ -28,7 +28,7 @@ public class FuncionarioService {
         var entity = new Funcionario(dto.nomeFuncionario(), dto.emailFuncionario(), 
                                     dto.cpfFuncionario(), dto.celularFuncionario(), 
                                     dto.dataNascimentoFuncionario(), 
-                                    dto.descricaoFuncionario(), true);
+                                    dto.descricaoFuncionario(), true, dto.image());
                                     
         var funcionarioSalvo = funcionarioRepository.save(entity);
         return funcionarioSalvo.getFuncionarioId();

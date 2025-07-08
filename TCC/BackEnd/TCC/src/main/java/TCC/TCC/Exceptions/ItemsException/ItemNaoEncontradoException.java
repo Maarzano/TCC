@@ -8,7 +8,7 @@ public class ItemNaoEncontradoException extends RuntimeException{
     public ItemNaoEncontradoException(long id){
         super("Item com ID " + id + " não encontrado");
     }
-    public ItemNaoEncontradoException(String nomeItem){
-        super("Item com nome " + nomeItem + " não encontrado");
+    public ItemNaoEncontradoException(String texto){
+        super(texto);
     }
 }

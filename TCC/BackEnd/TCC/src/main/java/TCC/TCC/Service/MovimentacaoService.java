@@ -3,18 +3,24 @@ package TCC.TCC.Service;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import lombok.RequiredArgsConstructor;
+
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import TCC.TCC.DTOs.MovimentacaoDTO.AtualizarMovimentacaoDTo;
+import TCC.TCC.DTOs.ItemDTO.ItemMovimentadoDTO;
+import TCC.TCC.DTOs.ItemDTO.ItemQuantidadeDTO;
 import TCC.TCC.DTOs.MovimentacaoDTO.CriarMovimentacaoDTO;
 import TCC.TCC.DTOs.MovimentacaoDTO.DetalhesMovimentacaoDTO;
 import TCC.TCC.Entities.Funcionario;
 import TCC.TCC.Entities.Item;
 import TCC.TCC.Entities.Movimentacao;
+import TCC.TCC.Entities.MovimentacaoItem;
 import TCC.TCC.Entities.Enum.StatusMovimentacao;
+import TCC.TCC.Exceptions.ItemsException.ItemNaoEncontradoException;
 import TCC.TCC.Repository.FuncionarioRepository;
 import TCC.TCC.Repository.ItemRepository;
+import TCC.TCC.Repository.MovimentacaoItemRepository;
 import TCC.TCC.Repository.MovimentacaoRepository;
 import jakarta.persistence.EntityNotFoundException;
 
@@ -25,33 +31,50 @@ public class MovimentacaoService {
     private final MovimentacaoRepository movimentacaoRepository;
     private final ItemRepository itemRepository;
     private final FuncionarioRepository funcionarioRepository;
+    private final MovimentacaoItemRepository movimentacaoItemRepository;
 
     @Transactional
     public DetalhesMovimentacaoDTO criarMovimentacao(CriarMovimentacaoDTO dto) {
-        Item item = itemRepository.findById(dto.itemId())
-            .orElseThrow(() -> new RuntimeException("Item não encontrado"));
-
         Funcionario funcionario = funcionarioRepository.findById(dto.funcionarioId())
             .orElseThrow(() -> new RuntimeException("Funcionário não encontrado"));
 
         Movimentacao movimentacao = new Movimentacao(
-            item,
             funcionario,
-            dto.quantidade(),
             dto.tipoMovimentacao(), StatusMovimentacao.PENDENTE,
             null
         );
 
         movimentacao = movimentacaoRepository.save(movimentacao);
 
+        List<MovimentacaoItem> movimentacaoItens = new ArrayList<>();
+
+
+        for (ItemQuantidadeDTO itemDTO : dto.itens()) {
+            Item item = itemRepository.findById(itemDTO.IdItem())
+                .orElseThrow(() -> new ItemNaoEncontradoException("Item com ID " + itemDTO.IdItem() + " não encontrado"));
+
+            MovimentacaoItem movimentacaoItem = new MovimentacaoItem();
+            movimentacaoItem.setMovimentacao(movimentacao);
+            movimentacaoItem.setItem(item);
+            movimentacaoItem.setQuantidade(itemDTO.quantidade());
+
+            movimentacaoItem = movimentacaoItemRepository.save(movimentacaoItem);
+            movimentacaoItens.add(movimentacaoItem);
+        }
+
+
         return new DetalhesMovimentacaoDTO(
-            movimentacao.getIdMovimentacao(),
-            movimentacao.getItem().getItemId(),
-            movimentacao.getFuncionario().getFuncionarioId(),
-            movimentacao.getQuantidade(),
-            movimentacao.getTipoMovimentacao(),
-            movimentacao.getStatusMovimentacao(),
-            movimentacao.getDataMovimentacao()
+        movimentacao.getIdMovimentacao(),
+        movimentacao.getFuncionario(),
+        movimentacao.getTipoMovimentacao(),
+        movimentacaoItens.stream()
+            .map(item -> new ItemMovimentadoDTO(
+                item.getItem().getItemId(),
+                item.getItem().getNomeItem(),
+                item.getQuantidade()
+            ))
+            .toList(),
+        movimentacao.getDataMovimentacao()
         );
     }
 
@@ -67,40 +90,29 @@ public class MovimentacaoService {
     }
 
     public List<DetalhesMovimentacaoDTO> listarMovimentacoes() {
-        return movimentacaoRepository.findAll().stream().map(mov -> 
-            new DetalhesMovimentacaoDTO(
+        List<Movimentacao> movimentacoes = movimentacaoRepository.findAll();
+
+        return movimentacoes.stream().map(mov -> {
+            List<MovimentacaoItem> itens = movimentacaoItemRepository.findByMovimentacao(mov);
+
+            List<ItemMovimentadoDTO> itensDTO = itens.stream()
+                .map(item -> new ItemMovimentadoDTO(
+                    item.getItem().getItemId(),
+                    item.getItem().getNomeItem(),
+                    item.getQuantidade()
+                ))
+                .toList();
+
+            return new DetalhesMovimentacaoDTO(
                 mov.getIdMovimentacao(),
-                mov.getItem().getItemId(),
-                mov.getFuncionario().getFuncionarioId(),
-                mov.getQuantidade(),
+                mov.getFuncionario(),
                 mov.getTipoMovimentacao(),
-                mov.getStatusMovimentacao(),
+                itensDTO,
                 mov.getDataMovimentacao()
-            )
-        ).collect(Collectors.toList());
+            );
+        }).collect(Collectors.toList()).reversed();
     }
 
-    @Transactional
-    public DetalhesMovimentacaoDTO atualizarMovimentacao(Long id, AtualizarMovimentacaoDTo dto) {
-        
-        Movimentacao movimentacao = movimentacaoRepository.findById(id)
-            .orElseThrow(() -> new RuntimeException("Movimentação não encontrada"));
-
-        movimentacao.setQuantidade(dto.quantidade());
-        movimentacao.setTipoMovimentacao(dto.tipoMovimentacao());
-
-        movimentacao = movimentacaoRepository.save(movimentacao);
-
-        return new DetalhesMovimentacaoDTO(
-            movimentacao.getIdMovimentacao(),
-            movimentacao.getItem().getItemId(),
-            movimentacao.getFuncionario().getFuncionarioId(),
-            movimentacao.getQuantidade(),
-            movimentacao.getTipoMovimentacao(),
-            movimentacao.getStatusMovimentacao(),
-            movimentacao.getDataMovimentacao()
-        );
-    }
 
     @Transactional
     public void deletarMovimentacao(Long id) {

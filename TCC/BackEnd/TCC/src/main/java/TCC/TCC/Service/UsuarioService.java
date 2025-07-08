@@ -66,5 +66,11 @@ public class UsuarioService {
     public Usuario buscarPorEmailESenha(String email, String senha) {
         return usuarioRepository.findByEmailAndSenha(email, senha).orElse(null);
     }
+    //login
+    public Usuario validarLogin(String login, String senha) {
+        return usuarioRepository.findByLoginAndSenha(login, senha).orElse(null);
+    }
+    
+    
 
 }

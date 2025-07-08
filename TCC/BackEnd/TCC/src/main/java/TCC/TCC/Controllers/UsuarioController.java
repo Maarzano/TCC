@@ -5,6 +5,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import TCC.TCC.DTOs.UsuarioDTO.AtualizarUsuarioDTO;
 import TCC.TCC.DTOs.UsuarioDTO.CriarUsuarioDTO;
+import TCC.TCC.DTOs.UsuarioDTO.LoginDTO;
 import TCC.TCC.Entities.Usuario;
 import TCC.TCC.Service.UsuarioService;
 import jakarta.validation.Valid;
@@ -65,6 +66,19 @@ public class UsuarioController {
         usuarioService.AtualiazarUsuarioPorId(userId, atualizarUsuarioDTO);
         return ResponseEntity.noContent().build();
     
+    }
+
+    //login
+
+    @PostMapping("/login")
+    public ResponseEntity<?> login(@RequestBody LoginDTO loginDTO) {
+        Usuario usuario = usuarioService.validarLogin(loginDTO.login(), loginDTO.senha());
+
+        if (usuario != null) {
+            return ResponseEntity.ok(usuario);
+        } else {
+            return ResponseEntity.status(401).body("Usuário ou senha inválidos.");
+        }
     }
 
 }

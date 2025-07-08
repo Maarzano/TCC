@@ -5,7 +5,6 @@ import java.util.List;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import TCC.TCC.DTOs.MovimentacaoDTO.AtualizarMovimentacaoDTo;
 import TCC.TCC.DTOs.MovimentacaoDTO.CriarMovimentacaoDTO;
 import TCC.TCC.DTOs.MovimentacaoDTO.DetalhesMovimentacaoDTO;
 import TCC.TCC.Service.MovimentacaoService;
@@ -26,12 +25,6 @@ public class MovimentacaoController {
     @GetMapping
     public ResponseEntity<List<DetalhesMovimentacaoDTO>> listarMovimentacoes() {
         return ResponseEntity.ok(movimentacaoService.listarMovimentacoes());
-    }
-
-    @PutMapping("/{id}")
-    public ResponseEntity<DetalhesMovimentacaoDTO> atualizarMovimentacao(@PathVariable("id") Long id, 
-            @RequestBody AtualizarMovimentacaoDTo dto) {
-        return ResponseEntity.ok(movimentacaoService.atualizarMovimentacao(id, dto));
     }
 
     @DeleteMapping("/{id}")

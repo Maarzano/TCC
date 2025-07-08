@@ -51,6 +51,9 @@ public class Usuario {
     @Column(name = "Email", unique = true, nullable = false)
     private String email;
 
+    @Column(name = "imagem_perfil", nullable = true)
+    private String imagem;
+
     @Column(name = "DataDeCriação", updatable = false)
     @CreationTimestamp
     private Instant creationTimestamp;

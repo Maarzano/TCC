@@ -1,15 +1,16 @@
 package TCC.TCC.DTOs.MovimentacaoDTO;
 
 import java.time.Instant;
+import java.util.List;
 
+import TCC.TCC.DTOs.ItemDTO.ItemMovimentadoDTO;
+import TCC.TCC.Entities.Funcionario;
 import TCC.TCC.Entities.Enum.*;
 
 public record DetalhesMovimentacaoDTO(
     Long idMovimentacao,
-    Long itemId,
-    Long funcionarioId,
-    int quantidade,
+    Funcionario funcionario,
     TipoMovimentacao tipoMovimentacao,
-    StatusMovimentacao status,
+    List<ItemMovimentadoDTO> itens,
     Instant dataMovimentacao
 ) {}

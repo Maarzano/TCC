@@ -20,10 +20,8 @@ import java.time.Instant;
 @AllArgsConstructor
 public class Movimentacao {
 
-    public Movimentacao(Item item, Funcionario funcionario, int quantidade, TipoMovimentacao tipoMovimentacao, StatusMovimentacao status, Instant dataMovimentacao) {
-        this.item = item;
+    public Movimentacao(Funcionario funcionario, TipoMovimentacao tipoMovimentacao, StatusMovimentacao status, Instant dataMovimentacao) {
         this.funcionario = funcionario;
-        this.quantidade = quantidade;
         this.tipoMovimentacao = tipoMovimentacao;
         this.statusMovimentacao = status;
         this.dataMovimentacao = dataMovimentacao;
@@ -35,15 +33,8 @@ public class Movimentacao {
     private long idMovimentacao;
 
     @ManyToOne
-    @JoinColumn(name = "id_item", nullable = false)
-    private Item item;
-
-    @ManyToOne
     @JoinColumn(name = "id_funcionario", nullable = false)
     private Funcionario funcionario;
-
-    @Column(name = "quantidade", nullable = false)
-    private int quantidade;
 
     @Enumerated(EnumType.STRING)
     @Column(name = "tipo_movimentacao", nullable = false)

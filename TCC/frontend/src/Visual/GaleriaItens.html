@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <title>Galeria de Itens</title>
     <link rel="stylesheet" href="assets/CSS/styles.css">
 </head>
 <body class="principal">
@@ -14,8 +14,21 @@
         </header>
         <section class="contentEstoque">
             <h2>Seu estoque</h2>
-            <p>Bem-vindo à tela de estoque. Nesta seção, é possível visualizar a quantidade atual de cada produto disponível na empresa. Este espaço foi desenvolvido para facilitar o acompanhamento dos itens armazenados e permitir o controle das saídas de produtos de forma prática e organizada. Mantenha-se sempre atualizado com as quantidades em tempo real e garanta uma gestão eficiente dos recursos.</p>
+            <p>Bem-vindo à tela de estoque. Nesta seção, é possível visualizar a quantidade atual de cada produto disponível na empresa.
+                 Este espaço foi desenvolvido para facilitar o acompanhamento dos itens armazenados e permitir o controle das saídas de produtos
+                  de forma prática e organizada. Mantenha-se sempre atualizado com as quantidades em tempo real e garanta uma gestão eficiente dos recursos.</p>
+
+            <section class="galeria-itens">
+                <input type="text" id="pesquisa-itens" placeholder="Pesquisar por nome..." class="campo-pesquisa">
+                <div id="container-itens" class="container-cards">
+                    <!-- Cards aqui -->
+                </div>
+                <div id="placeholder" class="sem-itens">
+                    <p>Nenhum item cadastrado no momento.</p>
+                </div>
+            </section>
         </section>
+        
         <footer>
             <a href="#" class="link">
                 <span class="link-icon">
@@ -32,5 +45,6 @@
             </a>
         </footer>
     </main>
+    <script src="assets/JS/GaleriaItens.js"></script>   
 </body>
 </html>

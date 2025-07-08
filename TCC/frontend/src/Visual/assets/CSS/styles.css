@@ -8,3 +8,95 @@
 @import url("Separations/buttons.css");
 @import url("Separations/animations.css");
 
+.container-cards {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px;
+    justify-content: center;
+    padding: 11.5px;
+    padding-top: 20px;
+    padding-bottom: 100px;
+}
+
+.card-item {
+    background-color: #fff;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+    padding: 20px;
+    width: 250px;
+    text-align: center;
+    transition: transform 0.3s ease;
+}
+
+.card-item:hover {
+    transform: scale(1.05) translateY(-5px);
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+}
+
+
+.card-item img {
+    width: 100%;
+    height: 140px;
+    object-fit: cover;
+    border-radius: 12px;
+    margin-bottom: 10px;
+}
+
+.card-item h3 {
+    font-size: 18px;
+    color: #333;
+    margin-bottom: 8px;
+}
+
+.card-item p {
+    font-size: 14px;
+    color: #666;
+    margin-bottom: 6px;
+}
+
+.sem-itens {
+    text-align: center;
+    color: #888;
+    font-style: italic;
+    margin-top: 30px;
+}
+.btn-toggle {
+    background-color: transparent;
+    border: none;
+    color: #1e90ff;
+    cursor: pointer;
+    font-size: 14px;
+    margin-bottom: 8px;
+    transition: color 0.2s ease;
+}
+
+.btn-toggle:hover {
+    color: #63b3ed;
+}
+
+.card-item {
+    position: relative;
+    overflow: hidden;
+    transition: all 0.3s ease;
+    word-wrap: break-word;
+    word-break: break-word;
+}
+
+.card-item .descricao {
+    max-height: 70px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: normal;
+    margin-bottom: 10px;
+}
+
+.btn-toggle-descricao {
+    background-color: transparent;
+    border: none;
+    color: #00aaff;
+    cursor: pointer;
+    font-size: 14px;
+    margin-bottom: 10px;
+    text-decoration: underline;
+}
+
