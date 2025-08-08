@@ -8,7 +8,6 @@ import org.springframework.stereotype.Service;
 import TCC.TCC.DTOs.ItemDTO.AtualizarItemDTO;
 import TCC.TCC.DTOs.ItemDTO.CriarItemDTO;
 import TCC.TCC.Entities.*;
-import TCC.TCC.Exceptions.ItemsException.ItemDuplicadoException;
 import TCC.TCC.Exceptions.ItemsException.ItemNaoEncontradoException;
 import TCC.TCC.Exceptions.ItemsException.QuantidadeInvalida;
 import TCC.TCC.Repository.*;
@@ -23,17 +22,16 @@ public class ItemService {
         this.itemRepository = itemRepository;
     }
 
-    public long criarItem(CriarItemDTO criarItemDTO){
+    public long criarItem(CriarItemDTO criarItemDTO, Usuario usuario){
 
         if(criarItemDTO.quantidade() < 0){
             throw new QuantidadeInvalida(criarItemDTO.quantidade());
         }
-        if (itemRepository.findBynomeItemIgnoreCase(criarItemDTO.nomeItem()).isPresent()) {
-            throw new ItemDuplicadoException(criarItemDTO.nomeItem());
-        }
 
         Item entity = new Item(criarItemDTO.nomeItem(), criarItemDTO.quantidade(),  
                                 criarItemDTO.imagem(), criarItemDTO.descricao());
+        
+        entity.setCriadoPor(usuario);
 
         Item itemSalvo = itemRepository.save(entity);
 
@@ -41,25 +39,36 @@ public class ItemService {
     }
 
     public Item pegarItemPeloId(long itemId){
-        return itemRepository.findById(itemId).orElseThrow(() -> new ItemNaoEncontradoException(itemId));
+        var item = itemRepository.findById(itemId)
+            .orElseThrow(() -> new ItemNaoEncontradoException(itemId));
+
+        if (!item.getAtivo()) {
+            throw new ItemNaoEncontradoException(itemId);
+        }
+
+        return item;
     }
 
     public List<Item> buscarPorNome(String nome) {
         return itemRepository.buscarPorNome(nome);
     }
 
-    public List<Item> listarItems(){
-        return itemRepository.findAll();
+    public List<Item> listarItems(Usuario usuario){
+        var itens = itemRepository.findByCriadoPorAndAtivoTrue(usuario);
+        
+        if (itens.isEmpty()) {
+            throw new ItemNaoEncontradoException("Nenhum item ativo encontrado para este usuário");
+        }
+
+        return itens;
     }
 
     public void deletarItem(long itemId){
-        var itemExiste = itemRepository.existsById(itemId);
+        var item = itemRepository.findById(itemId)
+            .orElseThrow(() -> new ItemNaoEncontradoException(itemId));
 
-        if(itemExiste){
-            itemRepository.deleteById(itemId);
-        } else {
-            throw new ItemNaoEncontradoException(itemId);
-        }
+        item.setAtivo(false);
+        itemRepository.save(item);
     }
 
     public Item AtualizarItemPorId(long itemId, AtualizarItemDTO atualizarItemDTO) {
@@ -68,13 +77,6 @@ public class ItemService {
     
         if (atualizarItemDTO.quantidade() != null && atualizarItemDTO.quantidade() < 0) {
             throw new QuantidadeInvalida(atualizarItemDTO.quantidade());
-        }
-        
-        if (atualizarItemDTO.nomeItem() != null && 
-            !atualizarItemDTO.nomeItem().equalsIgnoreCase(itemExiste.getNomeItem()) && 
-            itemRepository.findBynomeItemIgnoreCase(atualizarItemDTO.nomeItem()).isPresent()) {
-
-                throw new ItemDuplicadoException(atualizarItemDTO.nomeItem());
         }
 
         if (atualizarItemDTO.nomeItem() != null) {

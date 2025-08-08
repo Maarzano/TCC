@@ -61,6 +61,10 @@ const ExcelBTN = ({ data }) => {
 };
 
 const StyledWrapper = styled.div`
+  margin-left: 20px;
+  margin-bottom: 10px;
+  margin-top: 10px;
+
   .container-btn-file {
     display: flex;
     position: relative;

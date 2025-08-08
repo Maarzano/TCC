@@ -15,7 +15,7 @@ const AddEmployee = ({ isOpen, onClose, onSuccess, initialData }) => {
     image: ''
   });
   const [loading, setLoading] = useState(false);
-  const [erro, setErro] = useState('');
+  const [error, setError] = useState('');
   const [showConfirm, setShowConfirm] = useState(false);
 
   const isEdit = !!initialData?.funcionarioId;
@@ -63,14 +63,14 @@ const AddEmployee = ({ isOpen, onClose, onSuccess, initialData }) => {
   const handleSubmit = (e) => {
     e.preventDefault();
     console.log('handleSubmit chamado');
-    setErro('');
+    setError('');
     if (
       !form.nomeFuncionario.trim() ||
       !form.emailFuncionario.trim() ||
       !form.cpfFuncionario.trim() ||
       !form.celularFuncionario.trim()
     ) {
-      setErro('Nome, email, CPF e celular são obrigatórios.');
+      setError('Nome, email, CPF e celular são obrigatórios.');
       return;
     }
     setShowConfirm(true);
@@ -78,7 +78,7 @@ const AddEmployee = ({ isOpen, onClose, onSuccess, initialData }) => {
 
   const handleConfirm = async () => {
     setLoading(true);
-    setErro('');
+    setError('');
     try {
       if (isEdit) {
         await editarFuncionarioPorId(initialData.funcionarioId, {
@@ -118,10 +118,13 @@ const AddEmployee = ({ isOpen, onClose, onSuccess, initialData }) => {
       onClose();
     } catch (e) {
       console.error('Erro ao cadastrar funcionário:', e);
-      setErro(isEdit ? 'Erro ao editar funcionário.' : 'Erro ao cadastrar funcionário.');
+      setError(isEdit ? 'Erro ao editar funcionário.' : 'Erro ao cadastrar funcionário.');
     } finally {
       setLoading(false);
     }
+    setTimeout(() => {
+      window.location.reload();
+    }, 600);
   };
 
   return (
@@ -327,10 +330,6 @@ const ButtonRow = styled.div`
   }
 `;
 
-const ErrorMsg = styled.div`
-  color: #b31414;
-  font-weight: bold;
-  text-align: center;
-`;
+
 
 export default AddEmployee;

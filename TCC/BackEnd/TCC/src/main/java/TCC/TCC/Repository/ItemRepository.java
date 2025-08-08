@@ -19,4 +19,9 @@ public interface ItemRepository extends JpaRepository<Item, Long>{
     @Query("SELECT i FROM Item i WHERE LOWER(i.nomeItem) LIKE LOWER(CONCAT('%', :nomeItem, '%'))")
     List<Item> buscarPorNome(@Param("nomeItem") String nomeitem);
 
+    List<Item> findByCriadoPor(Usuario criadoPor);
+
+    List<Item> findByCriadoPorAndAtivoTrue(Usuario criadoPor);
+
+
 }

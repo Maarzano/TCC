@@ -2,11 +2,11 @@ import styled from "styled-components";
 import { useState, useEffect } from "react";
 
 const ActionModal = ({ isOpen, onClose, onConfirm, tipo, funcionarios = [] }) => {
-    const [responsavel, setResponsavel] = useState("");
+    const [responsavelId, setResponsavelId] = useState("");
 
     useEffect(() => {
         if (isOpen) {
-            setResponsavel("");
+            setResponsavelId("");
         }
     }, [isOpen]);
 
@@ -19,8 +19,8 @@ const ActionModal = ({ isOpen, onClose, onConfirm, tipo, funcionarios = [] }) =>
                 <p>Selecione o responsável pela {tipo.toLowerCase()}:</p>
 
                 <select
-                    value={responsavel}
-                    onChange={(e) => setResponsavel(e.target.value)}
+                    value={responsavelId}
+                    onChange={(e) => setResponsavelId(e.target.value)}
                 >
                     <option value="">Selecione um funcionário</option>
                     {funcionarios.map((func) => (
@@ -34,8 +34,14 @@ const ActionModal = ({ isOpen, onClose, onConfirm, tipo, funcionarios = [] }) =>
                     <button onClick={onClose}>Cancelar</button>
                     <button
                         onClick={() => {
-                            if (responsavel.trim()) {
-                                onConfirm(responsavel);
+                            const funcionarioSelecionado = funcionarios.find(
+                                (f) => f.funcionarioId === Number(responsavelId)
+                            );
+                            if (funcionarioSelecionado){
+                                onConfirm({
+                                    id: funcionarioSelecionado.funcionarioId,
+                                    nome: funcionarioSelecionado.nomeFuncionario
+                                })
                             } else {
                                 alert("Por favor, selecione um responsável.");
                             }

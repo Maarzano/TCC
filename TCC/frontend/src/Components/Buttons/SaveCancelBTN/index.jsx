@@ -47,7 +47,7 @@ const SaveCancelBTN = ({ type = "save", data, onConfirm, onClick }) => {
         icon = <CloudIcon className='Icon' />;
         btnText = 'Salvar';
         btnColor = "#623bda";
-        btnHoverTransform = "translateX(1.5em)";
+        btnHoverTransform = "translateX(1.45em)";
         break;
       case "delete":
         icon = <Trash className='Icon' />;
@@ -71,7 +71,7 @@ const SaveCancelBTN = ({ type = "save", data, onConfirm, onClick }) => {
         icon = <CloseIcon className='Icon' />;
         btnText = 'Cancelar';
         btnColor = "#212121";
-        btnHoverTransform = "translateX(2em)";
+        btnHoverTransform = "translateX(1.85em)";
         break;
       default:
         icon = <CloudIcon className='Icon' />;

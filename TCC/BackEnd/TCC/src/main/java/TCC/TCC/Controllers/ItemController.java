@@ -7,7 +7,9 @@ import org.springframework.web.bind.annotation.RestController;
 import TCC.TCC.DTOs.ItemDTO.AtualizarItemDTO;
 import TCC.TCC.DTOs.ItemDTO.CriarItemDTO;
 import TCC.TCC.Entities.Item;
+import TCC.TCC.Entities.Usuario;
 import TCC.TCC.Service.ItemService;
+import TCC.TCC.Service.UsuarioService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
@@ -16,7 +18,10 @@ import jakarta.validation.Valid;
 import java.net.URI;
 import java.util.List;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -32,13 +37,20 @@ import org.springframework.web.bind.annotation.PutMapping;
 public class ItemController {
     private ItemService itemService;
 
+    @Autowired
+    private UsuarioService usuarioService;
+
     public ItemController(ItemService itemService){
         this.itemService = itemService;
     }
 
     @PostMapping
-    public ResponseEntity<?> criarItem(@Valid @RequestBody CriarItemDTO entity) {
-        var itemId = itemService.criarItem(entity);
+    public ResponseEntity<?> criarItem(@Valid @RequestBody CriarItemDTO entity, @AuthenticationPrincipal Jwt jwt) {
+
+        String email = jwt.getSubject();
+        Usuario usuario = usuarioService.buscarPorEmail(email);
+
+        var itemId = itemService.criarItem(entity, usuario);
 
         return ResponseEntity.created(URI.create("/v1/Items/" + itemId))
                 .body(itemService.pegarItemPeloId(itemId));
@@ -50,10 +62,14 @@ public class ItemController {
     }
 
     @GetMapping
-    public  ResponseEntity<List<Item>> ListarItems() {
-        var items = itemService.listarItems();
+    public ResponseEntity<List<Item>> ListarItems(@AuthenticationPrincipal Jwt jwt) {
+        String email = jwt.getSubject();
+        Usuario usuario = usuarioService.buscarPorEmail(email);
+        
+        var items = itemService.listarItems(usuario);
         return ResponseEntity.ok(items);
     }
+
 
     @GetMapping("/buscar/{nomeItem}")
     public ResponseEntity<?> buscarItemPorNome(@PathVariable("nomeItem") String nomeItem) {

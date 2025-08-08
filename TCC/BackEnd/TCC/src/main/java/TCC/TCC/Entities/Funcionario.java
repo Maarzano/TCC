@@ -7,6 +7,8 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -39,7 +41,7 @@ public class Funcionario {
     @Column(name = "id_funcionario")
     private long funcionarioId;
 
-    @Column(name = "nome_funcionario", unique = true, nullable = false)
+    @Column(name = "nome_funcionario", unique = false, nullable = false)
     private String nomeFuncionario;
 
     @Column(name = "email_funcionario", unique = true, nullable = false)
@@ -62,6 +64,10 @@ public class Funcionario {
 
     @Column(name = "image_profile", nullable = true)
     private String image;
+
+    @ManyToOne
+    @JoinColumn(name = "criado_por", referencedColumnName = "id_usuario", nullable = false)
+    private Usuario criadoPor;
 
 
 }

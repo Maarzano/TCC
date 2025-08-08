@@ -16,6 +16,7 @@ import TCC.TCC.Entities.Funcionario;
 import TCC.TCC.Entities.Item;
 import TCC.TCC.Entities.Movimentacao;
 import TCC.TCC.Entities.MovimentacaoItem;
+import TCC.TCC.Entities.Usuario;
 import TCC.TCC.Entities.Enum.StatusMovimentacao;
 import TCC.TCC.Exceptions.ItemsException.ItemNaoEncontradoException;
 import TCC.TCC.Repository.FuncionarioRepository;
@@ -34,7 +35,7 @@ public class MovimentacaoService {
     private final MovimentacaoItemRepository movimentacaoItemRepository;
 
     @Transactional
-    public DetalhesMovimentacaoDTO criarMovimentacao(CriarMovimentacaoDTO dto) {
+    public DetalhesMovimentacaoDTO criarMovimentacao(CriarMovimentacaoDTO dto, Usuario usuario) {
         Funcionario funcionario = funcionarioRepository.findById(dto.funcionarioId())
             .orElseThrow(() -> new RuntimeException("Funcionário não encontrado"));
 
@@ -43,6 +44,7 @@ public class MovimentacaoService {
             dto.tipoMovimentacao(), StatusMovimentacao.PENDENTE,
             null
         );
+        movimentacao.setCriadoPor(usuario);
 
         movimentacao = movimentacaoRepository.save(movimentacao);
 
@@ -89,8 +91,8 @@ public class MovimentacaoService {
         movimentacaoRepository.save(movimentacao);
     }
 
-    public List<DetalhesMovimentacaoDTO> listarMovimentacoes() {
-        List<Movimentacao> movimentacoes = movimentacaoRepository.findAll();
+    public List<DetalhesMovimentacaoDTO> listarMovimentacoes(Usuario usuario) {
+        List<Movimentacao> movimentacoes = movimentacaoRepository.findByCriadoPor(usuario);
 
         return movimentacoes.stream().map(mov -> {
             List<MovimentacaoItem> itens = movimentacaoItemRepository.findByMovimentacao(mov);

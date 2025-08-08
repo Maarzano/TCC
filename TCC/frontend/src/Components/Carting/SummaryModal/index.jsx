@@ -1,6 +1,7 @@
 import styled from "styled-components";
 import { useCart } from "../../../Context/Cart";
 import { CriarMovimentacao } from "../../../Services/movimentacaoService";
+import { editarProdutoPorId, buscarProdutoPorId } from "../../../Services/prudutoService";
 
 const SummaryModal = ({isOpen, onClose, onConfirm = () => {}, tipo, responsavel,}) => {
   const { cartItems, clearCart } = useCart();
@@ -12,20 +13,60 @@ const SummaryModal = ({isOpen, onClose, onConfirm = () => {}, tipo, responsavel,
   const horaFormatada = dataHoraAtual.toLocaleTimeString();
 
   const handleConfirm = async () => {
-    const obj = {
-      "funcionarioId": responsavel,
+    try {
+      const obj = {
+        "funcionarioId": responsavel.id,
         "tipoMovimentacao": tipo,
         "itens": cartItems.map(item => ({
           IdItem: item.itemId,
           quantidade: item.quantity
         }))
+      };
+      
+      await CriarMovimentacao(obj);
+
+      if (tipo === "SAIDA" || tipo === "ENTRADA") {
+        for (const item of cartItems) {
+          try {
+            const produtoAtual = await buscarProdutoPorId(item.itemId);
+            
+            if (!produtoAtual || produtoAtual.quantidade === undefined) {
+              continue;
+            }
+            
+            let novaQuantidade;
+            
+            if (tipo === "SAIDA") {
+              novaQuantidade = produtoAtual.quantidade - item.quantity;
+              if (novaQuantidade < 0) {
+                novaQuantidade = 0;
+              }
+            } else if (tipo === "ENTRADA") {
+              novaQuantidade = produtoAtual.quantidade + item.quantity;
+            }
+            if (novaQuantidade !== undefined) {
+              const dadosAtualizados = {
+                nomeItem: produtoAtual.nomeItem,
+                quantidade: novaQuantidade,
+                descricao: produtoAtual.descricao || "",
+                imagem: produtoAtual.imagem || ""
+              };
+              await editarProdutoPorId(item.itemId, dadosAtualizados);
+            }
+          } catch (error) {
+            console.error(`❌ Erro ao atualizar ${item.nomeItem}:`, error);
+            console.error("Detalhes do erro:", error.response?.data || error.message);
+          }
+        }
+      }
+
+      clearCart();
+      onConfirm();
+      onClose();
+    } catch (error) {
+      console.error("❌ Erro geral no processamento:", error);
+      alert("Erro ao processar a movimentação. Verifique o console para mais detalhes.");
     }
-
-
-    await CriarMovimentacao(obj);
-    clearCart();
-    onConfirm();
-    onClose();
   };
 
   return (
@@ -40,7 +81,7 @@ const SummaryModal = ({isOpen, onClose, onConfirm = () => {}, tipo, responsavel,
 
         <Content>
           <Field>
-            <Label>Responsável:</Label> <Value>{responsavel}</Value>
+            <Label>Responsável:</Label> <Value>{responsavel.nome}</Value>
           </Field>
           <Field>
             <Label>Tipo de Ação:</Label> <Value>{tipo}</Value>
@@ -71,7 +112,17 @@ const SummaryModal = ({isOpen, onClose, onConfirm = () => {}, tipo, responsavel,
           <Confirmation>
             Você tem certeza que deseja realizar a{" "}
             <strong>{tipo.toLowerCase()}</strong> dos itens{" "}
-            <strong>{responsavel}</strong>?
+            <strong>{responsavel.nome}</strong>?
+            {tipo === "SAIDA" && (
+              <WarningText $type="saida">
+                ⚠️ Esta ação irá reduzir o estoque dos produtos retirados.
+              </WarningText>
+            )}
+            {tipo === "ENTRADA" && (
+              <WarningText $type="entrada">
+                ✅ Esta ação irá aumentar o estoque dos produtos devolvidos.
+              </WarningText>
+            )}
           </Confirmation>
         </Content>
 
@@ -180,6 +231,17 @@ const Confirmation = styled.p`
   font-size: 16px;
   font-weight: 600;
   text-align: center;
+`;
+
+const WarningText = styled.div`
+  margin-top: 10px;
+  font-size: 14px;
+  color: #ff6b6b;
+  font-weight: 500;
+  ${(props) =>
+    props.$type === "saida"
+      ? `color: #ff6b6b;`
+      : `color: #4caf50;`}
 `;
 
 const Footer = styled.div`

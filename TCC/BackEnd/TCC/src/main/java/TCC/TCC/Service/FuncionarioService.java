@@ -12,6 +12,7 @@ import java.util.Optional;
 import TCC.TCC.DTOs.FuncionarioDTO.AtualizarFuncionarioDTO;
 import TCC.TCC.DTOs.FuncionarioDTO.CriarFuncionarioDTO;
 import TCC.TCC.Entities.Funcionario;
+import TCC.TCC.Entities.Usuario;
 import TCC.TCC.Repository.FuncionarioRepository;
 
 @Service
@@ -24,11 +25,13 @@ public class FuncionarioService {
         this.funcionarioRepository = repository;
     }
 
-    public long criarFuncionario(CriarFuncionarioDTO dto){
+    public long criarFuncionario(CriarFuncionarioDTO dto, Usuario usuario){
         var entity = new Funcionario(dto.nomeFuncionario(), dto.emailFuncionario(), 
                                     dto.cpfFuncionario(), dto.celularFuncionario(), 
                                     dto.dataNascimentoFuncionario(), 
                                     dto.descricaoFuncionario(), true, dto.image());
+
+        entity.setCriadoPor(usuario);
                                     
         var funcionarioSalvo = funcionarioRepository.save(entity);
         return funcionarioSalvo.getFuncionarioId();
@@ -38,19 +41,28 @@ public class FuncionarioService {
         return funcionarioRepository.findById(funcId);
     }
 
-    public List<Funcionario> listarFuncionario(){
-        if(funcionarioRepository.count() <= 0) throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Não há nenhum funcionário");
-        return funcionarioRepository.findAll();
+    public List<Funcionario> listarFuncionario(Usuario usuario){
+        
+        var funcionariosAtivos = funcionarioRepository.findByCriadoPorAndAtivoTrue(usuario);
+
+        if (funcionariosAtivos.isEmpty()) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Não há nenhum funcionário ativo");
+        }
+
+        return funcionariosAtivos;
     }
 
     public void deletarFuncionario(long funcId){
-        var funcExist = funcionarioRepository.existsById(funcId);
+        var func = funcionarioRepository.findById(funcId);
 
-        if(funcExist){
-            funcionarioRepository.deleteById(funcId);
-        } else {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Item com id "+ funcId + " não encontrado");
+        if (func.isEmpty()) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Funcionário com id " + funcId + " não encontrado");
         }
+
+        var funcionario = func.get();
+        funcionario.setAtivo(false);
+
+        funcionarioRepository.save(funcionario);
     }
 
     public ResponseEntity<String> atualizarFuncionarioPeloId(long funcId, AtualizarFuncionarioDTO dto) {
@@ -82,6 +94,9 @@ public class FuncionarioService {
         }
         if (dto.descricaoFuncionario() != null) {
             funcionario.setDescricaoFuncionario(dto.descricaoFuncionario());
+        }
+        if (dto.image() != null) {
+            funcionario.setImage(dto.image());
         }
 
         funcionarioRepository.save(funcionario);

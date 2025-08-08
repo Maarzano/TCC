@@ -3,6 +3,7 @@ import styled, { css } from "styled-components";
 import bgImage from "../../Assets/SVGs/Background/background-login-cadastro.svg";
 import CardLogin from "../../Components/Cards/CardLogin";
 import CardCadastro from "../../Components/Cards/CardCadastro";
+import CardEsqueceuSenha from "../../Components/Cards/CardEsqueceuSenha";
 
 const Wrapper = styled.div`
   height: 100vh;
@@ -45,16 +46,22 @@ const AnimatedCard = styled.div`
 `;
 
 const Auth = () => {
-  const [isLogin, setIsLogin] = useState(true);
+  const [view, setView] = useState("login"); // "login", "cadastro", "esqueceuSenha"
 
   return (
     <Wrapper>
       <CardContainer>
-        <AnimatedCard show={isLogin}>
-          <CardLogin onSwitch={() => setIsLogin(false)} />
+        <AnimatedCard show={view === "login"}>
+          <CardLogin 
+            onSwitch={() => setView("cadastro")}
+            onForgotPassword={() => setView("esqueceuSenha")}
+          />
         </AnimatedCard>
-        <AnimatedCard show={!isLogin}>
-          <CardCadastro onSwitch={() => setIsLogin(true)} />
+        <AnimatedCard show={view === "cadastro"}>
+          <CardCadastro onSwitch={() => setView("login")} />
+        </AnimatedCard>
+        <AnimatedCard show={view === "esqueceuSenha"}>
+          <CardEsqueceuSenha onSwitch={(v) => setView(v)} />
         </AnimatedCard>
       </CardContainer>
     </Wrapper>

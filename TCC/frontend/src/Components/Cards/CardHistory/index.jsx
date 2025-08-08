@@ -1,6 +1,6 @@
 import { useState } from "react";
 import styled from "styled-components";
-import Profile from "../../../Assets/SVGs/Icons/icon-profile-white&purple.svg"
+import { placeholderProfile } from '../../../Utils/verificandoImagem';
 
 const CardHistory = ({ data }) => {
     const [expanded, setExpanded] = useState(false);
@@ -13,7 +13,7 @@ const CardHistory = ({ data }) => {
             <Cell width="7%">{data.idMovimentacao}</Cell>
 
             <Cell width="20%" flex>
-                <UserImage src={Profile} />
+                <UserImage src={placeholderProfile(data.funcionario.image)} />
                 <UserName>{data.funcionario?.nomeFuncionario || "_"}</UserName>
             </Cell>
 

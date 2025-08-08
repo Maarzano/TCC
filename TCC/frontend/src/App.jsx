@@ -4,7 +4,7 @@ import { CartProvider } from "./Context/Cart";
 
 const App = () => {
   return (
-    <BrowserRouter>
+    <BrowserRouter basename="/TCC">
       <CartProvider>
         <AppRoutes/>
       </CartProvider>

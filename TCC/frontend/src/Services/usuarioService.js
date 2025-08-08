@@ -33,3 +33,26 @@ export const logarUsuario = async (info) => {
     }
 };
 
+export const atualizarUsuario = async (userId, info) => {
+    try {
+        const response = await api.put(`/Usuarios/${userId}`, info);
+        return response;
+    } catch (e) {
+        console.error("Erro ao atualizar usuario", e);
+        throw e;
+    }
+};
+
+export const enviarEmailRecuperacaoSenha = async (email) => {
+    try {
+        const response = await api.post(`/Usuarios/esqueci-senha?email=${encodeURIComponent(email)}`);
+        return response.data;
+    } catch (e) {
+        if (e.response && e.response.status && e.response.status >= 400) {
+            // Se o backend retornar string, garanta que é string
+            throw typeof e.response.data === "string" ? e.response.data : "Erro ao enviar e-mail de recuperação";
+        }
+        throw "Erro ao enviar e-mail de recuperação";
+    }
+};
+

@@ -3,6 +3,7 @@ import styled from "styled-components";
 import ActionModal from "../ActionModal";
 import SummaryModal from "../SummaryModal";
 import { useFuncionarios } from "../../../Hooks/Funcionarios/useFuncionarios";
+import { useCart } from "../../../Context/Cart"; 
 
 const ActionButtons = ({ onActionConfirmed }) => {
     const [modalOpen, setModalOpen] = useState(false);
@@ -10,7 +11,8 @@ const ActionButtons = ({ onActionConfirmed }) => {
     const [tipoAcao, setTipoAcao] = useState("");
     const [responsavelSelecionado, setResponsavelSelecionado] = useState("");
     const { funcionarios } = useFuncionarios([]);
-
+    const { cartItems } = useCart(); 
+    
     const abrirModal = (tipo) => {
         setTipoAcao(tipo);
         setModalOpen(true);
@@ -20,16 +22,18 @@ const ActionButtons = ({ onActionConfirmed }) => {
         setResponsavelSelecionado(responsavel);
         setModalOpen(false);
         setResumoOpen(true);
-
-        if (onActionConfirmed) {
-            onActionConfirmed(tipoAcao, responsavel);
-        }
     };
+
+    const isDisabled = cartItems.length === 0;
 
     return (
         <Wrapper>
-            <button onClick={() => abrirModal("ENTRADA")}>Devolução</button>
-            <button onClick={() => abrirModal("SAIDA")}>Retirada</button>
+            <button disabled={isDisabled} onClick={() => abrirModal("ENTRADA")}>
+                Devolução
+            </button>
+            <button disabled={isDisabled} onClick={() => abrirModal("SAIDA")}>
+                Retirada
+            </button>
 
             <ActionModal
                 isOpen={modalOpen}
@@ -44,6 +48,12 @@ const ActionButtons = ({ onActionConfirmed }) => {
                 onClose={() => setResumoOpen(false)}
                 tipo={tipoAcao}
                 responsavel={responsavelSelecionado}
+                onConfirm={() => {
+                    if (onActionConfirmed) {
+                        onActionConfirmed(tipoAcao, responsavelSelecionado);
+                    }
+                    setResumoOpen(false);
+                }}
             />
         </Wrapper>
     );
@@ -66,7 +76,13 @@ const Wrapper = styled.div`
         font-size: 16px;
     }
 
-    button:hover {
+    button:disabled {
+        background-color: #ccc;
+        cursor: not-allowed;
+        color: #666;
+    }
+
+    button:hover:not(:disabled) {
         background-color: #5a3be0;
     }
 

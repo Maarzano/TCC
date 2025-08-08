@@ -83,9 +83,15 @@ const Item = styled.div`
   background-color: rgba(0, 0, 0, 0.4);
   padding: 20px 18px;
   border-radius: 15px;
+  transition: transform 0.3s ease;
+
+  &:hover {
+    transform: scale(1.015);
+  }
 `;
 
 const ImageWrapper = styled.div`
+
   width: 60px;
   height: 60px;
   border-radius: 20%;

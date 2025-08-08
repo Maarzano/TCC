@@ -5,7 +5,7 @@ import GoogleColor from "../../../Assets/SVGs/Icons/icon-google-color.svg";
 import { useLoginUsuario } from "../../../Hooks/Usuario/useLoginUsuario";
 import { useNavigate } from "react-router-dom";
 
-const CardLogin = ({ onSwitch }) => {
+const CardLogin = ({ onSwitch, onForgotPassword }) => {
   const [emailCpf, setEmailCpf] = useState("");
   const [senha, setSenha] = useState("");
   const {login, loading, erro, sucesso, dataRecebido} = useLoginUsuario();
@@ -45,7 +45,7 @@ const CardLogin = ({ onSwitch }) => {
           <label htmlFor="password">Senha</label>
           <input type="password" name="password" id="password" value={senha} placeholder="SenhaExemplo123.." onChange={(e) => setSenha(e.target.value)} required/>
           <div className="forgot">
-            <a rel="noopener noreferrer" href="#">Esqueceu a senha ?</a>
+            <a rel="noopener noreferrer" href="#" onClick={e => { e.preventDefault(); onForgotPassword(); }}>Esqueceu a senha ?</a>
           </div>
         </div>
         <button className="sign" onClick={handleLogin} disabled={loading}>{ loading ? "Carregando..." : "Entrar"}</button>
@@ -137,10 +137,10 @@ const StyledWrapper = styled.div`
   .sign {
     display: block;
     width: 100%;
-    background-color: #a78bfa;
+    background-color: #623bda;
     padding: 0.75rem;
     text-align: center;
-    color: #111827;
+    color: whitesmoke;
     border: none;
     border-radius: 0.375rem;
     font-weight: 600;

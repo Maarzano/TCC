@@ -48,4 +48,8 @@ public class Movimentacao {
     @Column(name = "data_movimentacao", nullable = false, updatable = false)
     private Instant dataMovimentacao;
 
+    @ManyToOne
+    @JoinColumn(name = "criado_por", referencedColumnName = "id_usuario", nullable = false)
+    private Usuario criadoPor;
+
 }

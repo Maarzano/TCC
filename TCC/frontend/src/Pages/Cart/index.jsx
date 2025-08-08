@@ -7,6 +7,7 @@ import CartItemList from "../../Components/Carting/CartItemList";
 import Search2 from "../../Components/Searchs/Search2/index.jsx";
 import Subnav from "../../Components/Navs/Subnav";
 import ClearButton from "../../Components/Carting/ClearButton/index.jsx";
+import SuccessActionModal from "../../Components/Modal/SuccessActionModal";
 
 const Wrapper = styled.div`
     background-color: #1a1a1a;
@@ -27,6 +28,16 @@ const Header = styled.div`
 
 const Cart = () => {
     const [searchTerm, setSearchTerm] = useState("");
+    const [showSuccessModal, setShowSuccessModal] = useState(false);
+    const [successTipo, setSuccessTipo] = useState("");
+
+    // Função chamada após confirmação de retirada/devolução
+    const handleActionConfirmed = (tipo, responsavel) => {
+        setSuccessTipo(tipo);
+        setShowSuccessModal(true);
+        setTimeout(() => setShowSuccessModal(false), 1800);
+    };
+
     return (
         <Wrapper>
             <NavBar />
@@ -42,9 +53,14 @@ const Cart = () => {
                     placeholder="Pesquisar item no carrinho..."
                 />
                 <CartItemList searchTerm={searchTerm} />
-                <ActionButtons  />
+                <ActionButtons onActionConfirmed={handleActionConfirmed} />
             </Content>
             <Subnav />
+            <SuccessActionModal
+                isOpen={showSuccessModal}
+                onClose={() => setShowSuccessModal(false)}
+                tipo={successTipo}
+            />
         </Wrapper>
     );
 };

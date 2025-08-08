@@ -69,6 +69,7 @@ build/
 ### VS Code ###
 .vscode/
 .codemap
+application.properties
 
 
 

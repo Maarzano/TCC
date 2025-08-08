@@ -77,8 +77,7 @@ const Wrapper = styled.div`
   color: white;
   height: 100%;
   min-height: 100vh;
-  padding: 40px;
-  padding-top: 90px;
+  padding: 100px 100px 30px 100px;
 `;
 
 const WrapperSearch = styled.div`

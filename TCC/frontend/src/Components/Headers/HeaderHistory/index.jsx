@@ -3,7 +3,7 @@ import styled from "styled-components";
 const HeaderHistory = () => {
     return (
         <Wrapper>
-            <TittlePage>Histórico</TittlePage>
+            <h2>Histórico</h2>
         </Wrapper>
     );
 }
@@ -11,11 +11,10 @@ const HeaderHistory = () => {
 
 
 const Wrapper = styled.div`
-    
-`
-
-const TittlePage = styled.h1`
-    font-size: 80px;
+    h2 {
+        margin-bottom: 10px;
+        color: wheat;
+    }
 `
 
 

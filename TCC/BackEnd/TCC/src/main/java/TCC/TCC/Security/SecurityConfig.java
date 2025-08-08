@@ -28,6 +28,7 @@ public class SecurityConfig {
                 ).permitAll()
                 .requestMatchers("/v1/auth/login").permitAll()
                 .requestMatchers(HttpMethod.POST, "/v1/Usuarios").permitAll()
+                .requestMatchers(HttpMethod.POST, "/v1/Usuarios/esqueci-senha").permitAll()
                 .requestMatchers(HttpMethod.GET, "/v1/Usuarios/**").permitAll()
                 .requestMatchers(HttpMethod.GET, "/v1/Funcionarios/**").permitAll()
                 .requestMatchers(HttpMethod.GET, "/v1/Items/**").permitAll()

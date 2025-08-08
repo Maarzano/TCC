@@ -2,7 +2,7 @@ import React, { useMemo, useRef, useEffect } from 'react';
 import styled from 'styled-components';
 import Arrow from '../../../Assets/SVGs/Icons/Arrow.svg';
 import SaveCancelBTN from '../../Buttons/SaveCancelBTN';
-import { placeholder } from '../../../Utils/verificandoImagem';
+import { placeholder, placeholderProfile } from '../../../Utils/verificandoImagem';
 import AddItemToStock from '../../Modal/AddItemToStock';
 import AddEmployee from '../../Modal/AddEmployee';
 
@@ -74,7 +74,7 @@ const CardStockEmployeeCart = ({ data, type, onDelete, expanded, onExpand, onCol
       >
         <div className="item-top">
           <div className="item-left">
-            <img src={placeholder(imagemSrc)} alt={nome} className="item-image" />
+            <img src={type === "stock" ? placeholder(imagemSrc) : placeholderProfile(imagemSrc)} alt={nome} className="item-image" />
             <div className="item-info">
               <span className="item-name">{nome}</span>
               <span className="item-description">{descricao}</span>

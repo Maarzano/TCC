@@ -46,7 +46,6 @@ const Subnav = () => {
   };
 
   const isStock = location.pathname === '/Config/Stock';
-  const isEmployes = location.pathname === '/Config/Employe';
 
   return (
     <StyledWrapper>
@@ -189,12 +188,6 @@ const StyledWrapper = styled.div`
   }
 `
 
-const StyledCreateBTN = styled.div`
-  position: fixed;
-  bottom: 70px;
-  left: 91%;
-  transform: translateX(-50%);
-  z-index: 10;
-`
+
 
 export default Subnav;

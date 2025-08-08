@@ -13,6 +13,7 @@ import TCC.TCC.Entities.Usuario;
 public interface UsuarioRepository extends JpaRepository<Usuario, Long>{
     Optional<Usuario> findByEmailAndSenha(String email, String senha);
     
+
     boolean existsByEmail(String email);
 
     @Query("SELECT u FROM Usuario u WHERE (u.email = :login OR u.cpf = :login) AND u.senha = :senha")

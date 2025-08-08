@@ -5,14 +5,29 @@ const CartContext = createContext();
 export const useCart = () => useContext(CartContext);
 
 export const CartProvider = ({ children }) => {
-    const [cartItems, setCartItems] = useState(() => {
-        const savedCart = localStorage.getItem('cart');
-        return savedCart ? JSON.parse(savedCart) : [];
-    });
+    const [cartItems, setCartItems] = useState([]);
+    const [email, setEmail] = useState(null);
+    const [initialized, setInitialized] = useState(false);
 
     useEffect(() => {
-        localStorage.setItem('cart', JSON.stringify(cartItems));
-    }, [cartItems]);
+        const usuario = JSON.parse(localStorage.getItem("usuario"));
+        const userEmail = usuario?.email;
+
+        if (userEmail) {
+            setEmail(userEmail);
+
+            const savedCart = localStorage.getItem(`cart_${userEmail}`);
+            setCartItems(savedCart ? JSON.parse(savedCart) : []);
+        }
+
+        setInitialized(true);
+    }, []);
+
+    useEffect(() => {
+        if (email) {
+            localStorage.setItem(`cart_${email}`, JSON.stringify(cartItems));
+        }
+    }, [cartItems, email]);
 
     const addItemToCart = (item, quantity) => {
         setCartItems(prev => {
@@ -33,6 +48,8 @@ export const CartProvider = ({ children }) => {
     };
 
     const clearCart = () => setCartItems([]);
+
+    if (!initialized) return null;
 
     return (
         <CartContext.Provider value={{ cartItems, addItemToCart, removeItemFromCart, clearCart }}>
